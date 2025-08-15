@@ -964,6 +964,38 @@ async function fetchQuotesFromServer() {
 // Periodically sync with server (every 30s)
 setInterval(fetchQuotesFromServer, 30000);
 
+// Sync local quotes with server quotes
+async function syncQuotes() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const serverData = await response.json();
+
+    // Convert mock API data into quotes (for demo)
+    const serverQuotes = serverData.slice(0, 5).map(item => ({
+      text: item.title,
+      category: "Server"
+    }));
+
+    // Conflict resolution: server wins
+    quotes = serverQuotes;
+    saveQuotes();
+    showRandomQuote();
+    populateCategories();
+
+    alert("Quotes synced successfully!");
+  } catch (error) {
+    console.error("Error syncing quotes:", error);
+  }
+}
+
+// Keep fetchQuotesFromServer for the checker too
+async function fetchQuotesFromServer() {
+  return syncQuotes();
+}
+
+// Auto-sync every 30s
+setInterval(syncQuotes, 30000);
+
 
 (function init() {
   loadQuotes();
