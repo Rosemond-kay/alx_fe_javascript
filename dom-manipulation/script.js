@@ -8,7 +8,7 @@ let quotes = [
 // Select DOM elements
 const quoteDisplay = document.getElementById("quoteDisplay");
 const newQuoteBtn = document.getElementById("newQuote");
-const addQuoteBtn = document.getElementById("addQuote");
+const formContainer = document.getElementById("formContainer");
 
 // Function to show a random quote
 function showRandomQuote() {
@@ -47,9 +47,34 @@ function addQuote() {
   alert("New quote added successfully!");
 }
 
+// Function to dynamically create the Add Quote form
+function createAddQuoteForm() {
+  const form = document.createElement("div");
+
+  const textInput = document.createElement("input");
+  textInput.id = "newQuoteText";
+  textInput.type = "text";
+  textInput.placeholder = "Enter a new quote";
+
+  const categoryInput = document.createElement("input");
+  categoryInput.id = "newQuoteCategory";
+  categoryInput.type = "text";
+  categoryInput.placeholder = "Enter quote category";
+
+  const addBtn = document.createElement("button");
+  addBtn.textContent = "Add Quote";
+  addBtn.addEventListener("click", addQuote);
+
+  form.appendChild(textInput);
+  form.appendChild(categoryInput);
+  form.appendChild(addBtn);
+
+  formContainer.appendChild(form);
+}
+
 // Event listeners
 newQuoteBtn.addEventListener("click", showRandomQuote);
-addQuoteBtn.addEventListener("click", addQuote);
 
-// Show one quote on load
+// Run functions on load
 showRandomQuote();
+createAddQuoteForm();  // ✅ now the form is dynamically generated
