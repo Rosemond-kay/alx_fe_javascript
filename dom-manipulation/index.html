@@ -20,6 +20,14 @@
   <button id="newQuote">Show New Quote</button>
   <button id="showLastViewed" title="Loads last viewed quote from this session">Show Last Viewed (Session)</button>
 
+  <!-- Sync Controls -->
+  <div id="syncBar" style="margin-top: 16px;">
+    <button id="syncNow">Sync Now</button>
+    <span id="syncStatus" style="margin-left: 8px;">Idle</span>
+    <button id="reviewConflicts" style="margin-left: 8px;">Review Conflicts</button>
+    <small id="lastSyncAt" style="margin-left: 8px; opacity: 0.7;"></small>
+  </div>
+
   <!-- Import / Export -->
   <div style="margin-top: 16px;">
     <button id="exportJson">Export Quotes (JSON)</button>
@@ -28,6 +36,9 @@
 
   <!-- Placeholder for Add-Quote Form -->
   <div id="formContainer" style="margin-top: 20px;"></div>
+
+  <!-- Conflict Panel -->
+  <div id="conflictPanel" style="margin-top: 20px;"></div>
 
   <script src="script.js"></script>
 </body>
