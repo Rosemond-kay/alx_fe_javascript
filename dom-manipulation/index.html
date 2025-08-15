@@ -8,8 +8,15 @@
 <body>
   <h1>Dynamic Quote Generator</h1>
 
+  <!-- Category Filter -->
+  <label for="categoryFilter">Filter by Category:</label>
+  <select id="categoryFilter" onchange="filterQuotes()">
+    <option value="all">All Categories</option>
+    <!-- Populated dynamically -->
+  </select>
+
   <!-- Quote Display + Controls -->
-  <div id="quoteDisplay" style="margin-bottom: 12px;"></div>
+  <div id="quoteDisplay" style="margin: 12px 0;"></div>
   <button id="newQuote">Show New Quote</button>
   <button id="showLastViewed" title="Loads last viewed quote from this session">Show Last Viewed (Session)</button>
 
@@ -19,7 +26,7 @@
     <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
   </div>
 
-  <!-- Placeholder where JS will insert the Add-Quote form -->
+  <!-- Placeholder for Add-Quote Form -->
   <div id="formContainer" style="margin-top: 20px;"></div>
 
   <script src="script.js"></script>

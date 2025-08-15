@@ -3,6 +3,8 @@
  *********************************************************/
 const LS_QUOTES_KEY = "dqg_quotes";
 const SS_LAST_QUOTE_KEY = "dqg_last_viewed";
+const LS_LAST_CATEGORY_KEY = "dqg_last_category";   // NEW: persist category filter
+
 
 /*********************************************************
  * State
@@ -22,6 +24,86 @@ const newQuoteBtn = document.getElementById("newQuote");
 const showLastViewedBtn = document.getElementById("showLastViewed");
 const exportBtn = document.getElementById("exportJson");
 const formContainer = document.getElementById("formContainer");
+const categoryFilter = document.getElementById("categoryFilter"); // NEW
+
+/*********************************************************
+ * Category Helpers
+ *********************************************************/
+function getUniqueCategories() {
+  const categories = quotes.map(q => q.category.trim());
+  return [...new Set(categories)];
+}
+
+function populateCategories() {
+  // Clear existing options except "All"
+  categoryFilter.innerHTML = `<option value="all">All Categories</option>`;
+
+  const uniqueCategories = getUniqueCategories();
+  uniqueCategories.forEach(cat => {
+    const opt = document.createElement("option");
+    opt.value = cat;
+    opt.textContent = cat;
+    categoryFilter.appendChild(opt);
+  });
+
+  // Restore last selected filter if exists
+  const lastFilter = localStorage.getItem(LS_LAST_CATEGORY_KEY) || "all";
+  categoryFilter.value = lastFilter;
+}
+
+/*********************************************************
+ * Filter Quotes
+ *********************************************************/
+function filterQuotes() {
+  const selected = categoryFilter.value;
+  localStorage.setItem(LS_LAST_CATEGORY_KEY, selected); // ✅ persist choice
+
+  if (selected === "all") {
+    showRandomQuote(); // just pick from all
+    return;
+  }
+
+  const filtered = quotes.filter(q => q.category === selected);
+  if (filtered.length === 0) {
+    quoteDisplay.textContent = `No quotes available in "${selected}" category.`;
+    return;
+  }
+
+  // Pick random from filtered list
+  const idx = Math.floor(Math.random() * filtered.length);
+  const q = filtered[idx];
+  renderQuote(q);
+  saveLastViewedToSession(q);
+}
+
+/*********************************************************
+ * Modified addQuote (updates categories too)
+ *********************************************************/
+function addQuote() {
+  const textInput = document.getElementById("newQuoteText");
+  const categoryInput = document.getElementById("newQuoteCategory");
+
+  const newText = textInput.value.trim();
+  const newCategory = categoryInput.value.trim();
+
+  if (!newText || !newCategory) {
+    alert("Please enter both quote text and category!");
+    return;
+  }
+
+  const newObj = { text: newText, category: newCategory };
+  quotes.push(newObj);
+  saveQuotes();
+  renderQuote(newObj);
+  saveLastViewedToSession(newObj);
+
+  // ✅ Update categories dropdown dynamically
+  populateCategories();
+
+  textInput.value = "";
+  categoryInput.value = "";
+  alert("New quote added successfully!");
+}
 
 /*********************************************************
  * Local & Session Storage Helpers
@@ -234,22 +316,15 @@ function showLastViewedQuote() {
  * Init
  *********************************************************/
 (function init() {
-  // Load quotes from localStorage if present
   loadQuotes();
+  populateCategories();   // ✅ Populate dropdown on load
 
-  // Wire up controls
-  newQuoteBtn.addEventListener("click", showRandomQuote);
+  newQuoteBtn.addEventListener("click", filterQuotes);  // use filter-aware show
   showLastViewedBtn.addEventListener("click", showLastViewedQuote);
   exportBtn.addEventListener("click", exportToJson);
 
-  // Build dynamic form (required)
   createAddQuoteForm();
 
-  // Prefer showing last viewed from this session; otherwise random
-  const last = loadLastViewedFromSession();
-  if (last) {
-    renderQuote(last);
-  } else {
-    showRandomQuote();
-  }
+  // Restore last filter: show filtered quote immediately
+  filterQuotes();
 })();
