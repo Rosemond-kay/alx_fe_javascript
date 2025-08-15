@@ -937,6 +937,33 @@ async function resolveConflict(conflictId, choice) {
   syncTimer = setInterval(syncWithServer, SYNC_INTERVAL_MS);
 })();
 
+// Simulate fetching quotes from a server (mock API)
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const serverData = await response.json();
+
+    // Transform mock API data into quotes (for demo purposes)
+    const serverQuotes = serverData.slice(0, 5).map(item => ({
+      text: item.title,
+      category: "Server"
+    }));
+
+    // Conflict resolution: server takes precedence
+    quotes = serverQuotes;
+    saveQuotes();
+    showRandomQuote();
+    populateCategories();
+
+    alert("Quotes synced with server!");
+  } catch (error) {
+    console.error("Error fetching quotes from server:", error);
+  }
+}
+
+// Periodically sync with server (every 30s)
+setInterval(fetchQuotesFromServer, 30000);
+
 
 (function init() {
   loadQuotes();
