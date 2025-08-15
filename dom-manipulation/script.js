@@ -55,25 +55,37 @@ function populateCategories() {
  * Filter Quotes
  *********************************************************/
 function filterQuotes() {
-  const selected = categoryFilter.value;
-  localStorage.setItem(LS_LAST_CATEGORY_KEY, selected); // ✅ persist choice
+  const selectedCategory = document.getElementById("categoryFilter").value;
 
-  if (selected === "all") {
-    showRandomQuote(); // just pick from all
+  // Save the chosen filter so it's remembered
+  localStorage.setItem(LS_LAST_CATEGORY_KEY, selectedCategory);
+
+  // If "all" is selected, show a random quote from the full list
+  if (selectedCategory === "all") {
+    showRandomQuote();
     return;
   }
 
-  const filtered = quotes.filter(q => q.category === selected);
-  if (filtered.length === 0) {
-    quoteDisplay.textContent = `No quotes available in "${selected}" category.`;
+  // Filter the quotes array based on category
+  const filteredQuotes = quotes.filter(q => q.category === selectedCategory);
+
+  // If no quotes match, show a message
+  if (filteredQuotes.length === 0) {
+    quoteDisplay.textContent = `No quotes available in "${selectedCategory}" category.`;
     return;
   }
 
-  // Pick random from filtered list
-  const idx = Math.floor(Math.random() * filtered.length);
-  const q = filtered[idx];
-  renderQuote(q);
-  saveLastViewedToSession(q);
+  // Pick a random quote from the filtered list and display it
+  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+  const chosenQuote = filteredQuotes[randomIndex];
+
+  quoteDisplay.innerHTML = `
+    <p>"${chosenQuote.text}"</p>
+    <small>- Category: ${chosenQuote.category}</small>
+  `;
+
+  // Save last viewed quote to session storage
+  saveLastViewedToSession(chosenQuote);
 }
 
 /*********************************************************
