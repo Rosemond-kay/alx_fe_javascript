@@ -1,19 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dynamic Quote Generator</title>
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
-  <!-- Quote Display -->
-  <div id="quoteDisplay"></div>
+  <!-- Quote Display + Controls -->
+  <div id="quoteDisplay" style="margin-bottom: 12px;"></div>
   <button id="newQuote">Show New Quote</button>
+  <button id="showLastViewed" title="Loads last viewed quote from this session">Show Last Viewed (Session)</button>
 
-  <!-- Placeholder where JS will insert the form -->
-  <div id="formContainer"></div>
+  <!-- Import / Export -->
+  <div style="margin-top: 16px;">
+    <button id="exportJson">Export Quotes (JSON)</button>
+    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+  </div>
+
+  <!-- Placeholder where JS will insert the Add-Quote form -->
+  <div id="formContainer" style="margin-top: 20px;"></div>
 
   <script src="script.js"></script>
 </body>
